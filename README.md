@@ -3,7 +3,7 @@
 Claude Code slash commands that turn rough startup and product ideas into structured research reports, saved directly to your Obsidian vault.
 
 ```
-/analyze-idea "A CLI book reader with ASCII art and gamification"
+/analyze-idea "A Idea Dumpster where i can put ideas and get proper researched"
 ```
 
 Produces a 25-section report — market research, competitors, tech stack, cost estimates, viability score — and writes it to `{vault}/Ideas/Research/`. No browser tabs, no copy-pasting, no switching apps.
@@ -29,7 +29,7 @@ Produces a 25-section report — market research, competitors, tech stack, cost 
 **macOS / Linux**
 
 ```bash
-git clone https://github.com/your-username/idea-dumpster.git
+git clone https://github.com/ExPl0iT-29/idea-dumpster.git
 cd idea-dumpster
 chmod +x install.sh
 ./install.sh
@@ -38,7 +38,7 @@ chmod +x install.sh
 **Windows (PowerShell)**
 
 ```powershell
-git clone https://github.com/your-username/idea-dumpster.git
+git clone https://github.com/ExPl0iT-29/idea-dumpster.git
 cd idea-dumpster
 .\install.ps1
 ```
