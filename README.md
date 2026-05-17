@@ -2,7 +2,7 @@
 
 
 
-
+```
  _     _                      _                           _            
 (_)   | |                    | |                         | |           
  _  __| | ___  __ _ ______ __| |_   _ _ __ ___  _ __  ___| |_ ___ _ __ 
@@ -11,9 +11,9 @@
 |_|\__,_|\___|\__,_|      \__,_|\__,_|_| |_| |_| .__/|___/\__\___|_|   
                                                | |                     
                                                |_|                     
+```
 
 
-                                               
 Claude Code slash commands that turn rough startup and product ideas into structured research reports, saved directly to your Obsidian vault.
 
 ```
