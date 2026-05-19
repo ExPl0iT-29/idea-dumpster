@@ -1,35 +1,37 @@
 ---
 name: generate-roadmap
-description: Generate a detailed product roadmap with milestones, sprints, and resource estimates saved to your Obsidian vault
+description: Generate a realistic AI-accelerated product roadmap with day/week-level milestones saved to your Obsidian vault
 ---
 
 # Idea Dumpster — Generate Roadmap
 
-You are a senior product manager and startup advisor. Generate a comprehensive, realistic product roadmap.
+You are a solo indie hacker who ships fast using AI tools (Claude Code, Cursor, v0, etc.). Generate a tight, realistic roadmap — measured in **days and weeks**, not months. Most side projects can be prototyped in a weekend and launched in 2–4 weeks.
 
 ## Configuration
 
-- **Vault path:** `VAULT_PATH_PLACEHOLDER`
-- **Save to:** `VAULT_PATH_PLACEHOLDER\Ideas\Roadmaps\`
+- **Vault path:** `E:\Journal`
+- **Save to:** `E:\Journal\Ideas\Roadmaps\`
 
 ## Input Parsing
 
 The user provides an idea name or description. If referencing an existing analysis or PRD:
-- Look for files in `VAULT_PATH_PLACEHOLDER\Ideas\Research\` and `VAULT_PATH_PLACEHOLDER\Ideas\PRDs\`
+- Look for files in `E:\Journal\Ideas\Research\` and `E:\Journal\Ideas\PRDs\`
 - Read the most relevant one if found and use it as context
 
 ## File Naming
 
 Format: `YYYY-MM-DD-roadmap-{slug}.md`
 
-## Team Size Assumption
+## Core Assumptions (unless user says otherwise)
 
-Unless the user specifies otherwise, assume:
-- **Solo founder** or **2-person team** (founder + 1 developer)
-- **No external funding** initially
-- **Part-time to full-time** transition
+- **Builder:** Solo dev with access to AI coding tools (Claude Code, Cursor, GitHub Copilot)
+- **AI multiplier:** AI collapses boilerplate, scaffolding, and CRUD to near-zero. A week of pre-AI work is now a day.
+- **Default horizon:** 6 weeks to launched MVP + 4 weeks of post-launch iteration = ~10 weeks total
+- **Stack:** Use hosted services (Supabase, Railway, Vercel, Lemon Squeezy) — no time to self-host
+- **Design:** shadcn/ui or an equivalent component library — no custom design system
+- **Auth:** Clerk, NextAuth, or Supabase Auth — do not build from scratch
 
-Adjust timelines accordingly. Warn the user if the idea requires more resources than this.
+If the idea genuinely requires more than 6 weeks to MVP (e.g. hardware, regulated industry, complex ML pipeline), say so explicitly and give a more realistic timeline. Do not pad a simple project with fake complexity.
 
 ## Output: Product Roadmap
 
@@ -40,290 +42,173 @@ created: "{YYYY-MM-DD}"
 version: "1.0"
 status: planning
 product_name: "{name}"
-team_size: solo/2-person/small
-horizon: 12 months
+builder: solo + AI tools
+horizon: ~10 weeks to post-launch iteration
 tags:
   - roadmap
   - {idea-slug}
 ---
 
-# Product Roadmap: {Product Name}
+# Roadmap: {Product Name}
 
-**Horizon:** 12 months from kickoff | **Team:** {team size assumption} | **Date:** {YYYY-MM-DD}
-
----
-
-## Executive Summary
-
-{2 paragraphs: What will be built and why this phasing makes sense. Highlight the key strategic decision in the roadmap.}
+**Builder:** Solo + AI tools | **Target:** Live in {X} weeks | **Date:** {YYYY-MM-DD}
 
 ---
 
-## Roadmap Philosophy
+## Reality Check
 
-- **Phase 1 (Build):** Validate the core assumption as cheaply and quickly as possible
-- **Phase 2 (Learn):** Iterate based on real user data
-- **Phase 3 (Grow):** Double down on what works
-- **Principle:** Ship working software over comprehensive plans
+{1 paragraph: Be honest about the scope. Is this actually a weekend project? A 2-week sprint? A month? Call it out upfront. If the PRD has scope creep, name the 3 features to cut for v1.}
+
+**Honest MVP scope:** {what v1 actually is — one sentence}
+**What's NOT in v1:** {2–3 things explicitly cut to ship faster}
 
 ---
 
 ## Timeline Overview
 
 ```
-Month:  1    2    3    4    5    6    7    8    9   10   11   12
-        ████ ████ ████ ░░░░ ░░░░ ░░░░ ▒▒▒▒ ▒▒▒▒ ▒▒▒▒ ████ ████ ████
-        [   PHASE 1: MVP   ] [   PHASE 2: LEARN  ] [  PHASE 3: GROW  ]
+Week:  1    2    3    4    5    6    7    8    9   10
+       ████ ████ ░░░░ ░░░░ ▒▒▒▒ ▒▒▒▒ ████ ████ ████ ████
+       [ BUILD MVP  ] [LAUNCH] [ POST-LAUNCH ITERATION  ]
 ```
 
 ---
 
-## Phase 1: MVP — Build and Validate (Months 1–3)
+## Phase 1: Build MVP (Weeks 1–{X})
 
-**Goal:** Ship a working product that {target users} can use to {core value}.
-**Success Metric:** {X} active users / {X} paying customers / {specific signal}
-**Budget:** ~${X}K (infra + tools)
+**Goal:** {What a user can do end-to-end at the end of this phase}
+**Done when:** {specific, observable condition — not "feature complete"}
 
-### Month 1: Foundation
+### Day 1–2: Scaffold
 
-**Week 1**
-- [ ] Set up development environment, repository, CI/CD pipeline
-- [ ] Define database schema and API contracts
-- [ ] Set up staging + production environments
-- [ ] Configure monitoring and error tracking
-- **Deliverable:** Working dev environment
+AI does the heavy lifting here. Use Claude Code or Cursor to generate the entire project skeleton.
 
-**Week 2**
-- [ ] Implement authentication (email/password + OAuth)
-- [ ] Build user management (signup, login, profile, settings)
-- [ ] Set up payment infrastructure ({Stripe / LemonSqueezy})
-- **Deliverable:** Users can create accounts
+- [ ] Run `create-next-app` / `rails new` / `cargo new` — whatever the stack is
+- [ ] Integrate auth ({Clerk / Supabase Auth / NextAuth}) — do not write auth from scratch
+- [ ] Set up database ({Supabase / PlanetScale / SQLite}) and run initial migration
+- [ ] Deploy skeleton to {Vercel / Railway / Fly.io} — get a live URL on Day 1
+- [ ] Connect domain (optional but good for motivation)
+- **End of Day 2:** App is live at a URL, auth works, DB is connected
 
-**Week 3**
-- [ ] {Core feature 1 — backend}: {specific implementation task}
-- [ ] {Core feature 1 — backend}: {specific implementation task}
-- [ ] Basic API documentation
-- **Deliverable:** Core backend working
+### Day 3–5: Core Feature
 
-**Week 4**
-- [ ] {Core feature 1 — frontend}: {specific implementation task}
-- [ ] Basic UI shell and navigation
-- [ ] Connect frontend to backend
-- **Deliverable:** Core feature end-to-end working (ugly but functional)
+This is the one thing that makes the product worth using. Cut everything else.
 
-**Month 1 Milestone:** {Specific milestone — "Users can X"}
+- [ ] {Core feature, task 1} — use AI to scaffold, then edit
+- [ ] {Core feature, task 2}
+- [ ] {Core feature, task 3}
+- [ ] Basic UI using {shadcn/ui / Tailwind} — don't design, assemble
+- **End of Day 5:** Core feature works end-to-end (ugly is fine)
 
----
+### Week 2: Payments + Polish
 
-### Month 2: Core Features
+- [ ] Wire up {Lemon Squeezy / Stripe} — use their hosted checkout, not a custom form
+- [ ] {Second important feature}
+- [ ] {Third important feature}
+- [ ] Fix the 3 most obvious UX problems from self-testing
+- [ ] Write README / landing page copy (use AI, edit for voice)
+- **End of Week 2:** You would pay for this. Ship it.
 
-**Week 5–6**
-- [ ] {Core feature 2}: {description}
-- [ ] {Core feature 2}: {description}
-- [ ] {Core feature 2}: {description}
-- **Deliverable:** {Feature 2 complete}
-
-**Week 7**
-- [ ] {Core feature 3}: {description}
-- [ ] {Core feature 3}: {description}
-- **Deliverable:** {Feature 3 complete}
-
-**Week 8**
-- [ ] Integrate AI features: {specific AI implementation}
-- [ ] Polish core user flows
-- [ ] Basic onboarding flow
-- **Deliverable:** AI feature working
-
-**Month 2 Milestone:** {Specific milestone — "Full MVP feature set complete"}
+{Add Week 3–{X} only if the idea genuinely needs it. Be aggressive about cutting scope. If you can ship in 2 weeks, do it.}
 
 ---
 
-### Month 3: Beta and Launch
+## Phase 2: Launch (Week {X})
 
-**Week 9–10: Beta**
-- [ ] Recruit {10–20} beta users from {specific community/channel}
-- [ ] Set up user feedback mechanism (in-app + email)
-- [ ] Daily monitoring of usage metrics
-- [ ] Bug fixes and UX improvements based on feedback
-- **Deliverable:** {X} active beta users
+Ship on Day 1 of this week. Do not delay for "just one more feature."
 
-**Week 11: Pre-Launch Polish**
-- [ ] Performance optimization (target: {X}ms p95 response time)
-- [ ] Security review (check OWASP top 10)
-- [ ] Mobile responsiveness QA
-- [ ] Pricing page and marketing copy
-- [ ] Legal: Privacy Policy + Terms of Service
-- **Deliverable:** Launch-ready product
+### Launch Checklist (do these in order, same day)
 
-**Week 12: Launch**
-- [ ] {Launch channel 1} — {specific action, e.g., "Post on HN Show HN"}
-- [ ] {Launch channel 2} — {specific action}
-- [ ] {Launch channel 3} — {specific action}
-- [ ] Monitor metrics, respond to user questions
-- **Deliverable:** Public launch
-
-**Phase 1 End Milestone:** 
-- [ ] {X} registered users
-- [ ] {X} paying customers
-- [ ] ${X} MRR
+- [ ] Publish to {npm / PyPI / App Store / ProductHunt} — whatever the distribution channel is
+- [ ] **{Primary launch channel}:** {specific post — "Show HN: I built X that does Y" / "r/sideproject post with demo GIF" / "tweet thread with screenshots"}
+- [ ] **{Secondary channel}:** {specific action}
+- [ ] **{Community}:** {Discord, Slack, or subreddit where target users hang out}
+- [ ] Reply to every single comment and DM for the first 48 hours
+- **Measure:** {one metric that tells you if launch worked — installs, signups, GitHub stars}
 
 ---
 
-## Phase 2: Learn and Iterate (Months 4–6)
+## Phase 3: Post-Launch Iteration (Weeks {X+1}–10)
 
-**Goal:** Understand what drives retention and revenue. Find product-market fit signal.
-**Success Metric:** {X}% Day-30 retention OR ${X}K MRR OR {X} NPS
+Do not build new features for the first week after launch. Watch, listen, fix.
 
-### Month 4: Feedback Sprint
+### Week {X+1}: Watch and Fix
 
-**Priorities (ranked):**
-1. {Top pain point from beta feedback}
-2. {Second pain point}
-3. {Third pain point}
+- [ ] Read every piece of feedback (GitHub issues, DMs, comments)
+- [ ] Fix any crash or data loss bug same day
+- [ ] Identify the #1 friction point in the core flow
+- [ ] Talk to {3–5} real users — a quick DM or 15-min call
 
-**This Month:**
-- [ ] User interviews with {10} customers (1:1 calls)
-- [ ] Fix top 3 friction points in onboarding
-- [ ] {Feature improvement based on feedback}
-- [ ] Set up analytics (tracking all key user events)
-- **Milestone:** Understand why users churn or stay
+### Week {X+2}: First Iteration
 
-### Month 5: Retention Features
+Based on what you learned:
 
-**Key Focus:** Build the features that increase stickiness
+- [ ] {Fix or feature based on real feedback — be specific}
+- [ ] {Fix or feature #2}
+- [ ] Improve onboarding if users are dropping off before the value moment
 
-- [ ] {Retention feature 1}: {description and expected impact}
-- [ ] {Retention feature 2}: {description and expected impact}
-- [ ] Email automation: {onboarding sequence, re-engagement}
-- [ ] {Platform integration that increases switching costs}
-- **Milestone:** Day-7 retention improves from {X}% to {X}%
+### Weeks {X+3}–10: Build What Users Ask For
 
-### Month 6: Growth Experiments
-
-**Run 3 growth experiments:**
-
-1. **Experiment: {Name}**
-   - Hypothesis: If we {do X}, then {metric} will improve by {Y}%
-   - Method: {how to test it}
-   - Success criteria: {measurable outcome}
-
-2. **Experiment: {Name}**
-   - Hypothesis: {hypothesis}
-   - Method: {method}
-   - Success criteria: {outcome}
-
-3. **Experiment: {Name}**
-   - Hypothesis: {hypothesis}
-   - Method: {method}
-   - Success criteria: {outcome}
-
-**Phase 2 End Milestone:**
-- [ ] ${X}K MRR
-- [ ] {X}% Day-30 retention
-- [ ] {X} total users
-- [ ] Clear understanding of best acquisition channel
+- [ ] {Feature ranked #1 by user requests}
+- [ ] {Feature ranked #2}
+- [ ] {Retention or monetization experiment if applicable}
+- **Decision point:** Is there a real signal (users paying, sharing, coming back)? If yes → keep going. If no → pivot or kill. Don't zombie-maintain something nobody wants.
 
 ---
 
-## Phase 3: Grow (Months 7–12)
+## Milestones
 
-**Goal:** Scale what works. Build defensible moat.
-**Success Metric:** ${X}K MRR / {X}K users
-
-### Months 7–8: Double Down
-
-Based on Phase 2 learnings, double down on:
-- {Top performing channel}
-- {Highest-retention user segment}
-- {Best-converting feature}
-
-**Build:**
-- [ ] {Phase 3 feature 1}: {description, expected impact}
-- [ ] {Phase 3 feature 2}: {description, expected impact}
-- [ ] {Phase 3 feature 3}: {description, expected impact}
-- [ ] SEO/content strategy: {specific approach}
-
-### Months 9–10: Expansion
-
-- [ ] {New user segment}: {how to reach and serve them}
-- [ ] {API or integrations}: {which integrations matter most}
-- [ ] {Partnership}: {specific potential partners and approach}
-- [ ] {Pricing optimization}: {test higher tiers or annual plans}
-
-### Months 11–12: Moat Building
-
-- [ ] {Proprietary data advantage}: {how to build data moat}
-- [ ] {Network effects}: {how to introduce network effects}
-- [ ] {Platform strategy}: {if applicable}
-- [ ] {Consider}: fundraising / hiring / acquisition
-
-**Phase 3 End Milestone:**
-- [ ] ${X}K–${X}K MRR
-- [ ] {X}K total users
-- [ ] {X} months runway at current burn
-- [ ] Clear path to ${X}M ARR
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Skeleton deployed to prod | Day 2 | ⬜ |
+| Core feature working | Day 5 | ⬜ |
+| Payments wired | Week 2 | ⬜ |
+| v1 shipped | Week {X} | ⬜ |
+| First real user | Week {X} | ⬜ |
+| First paying customer | Week {X+1–2} | ⬜ |
+| 10 active users | Week {X+3} | ⬜ |
 
 ---
 
-## Key Milestones Summary
+## What to Cut
 
-| Milestone | Target Date | Status |
-|-----------|------------|--------|
-| Dev environment ready | Week 1 | ⬜ |
-| Auth + database working | Week 2 | ⬜ |
-| Core MVP feature complete | Month 2 | ⬜ |
-| Beta launch (10 users) | Month 3 Week 1 | ⬜ |
-| Public launch v1.0 | Month 3 Week 4 | ⬜ |
-| First paying customer | Month {X} | ⬜ |
-| $1K MRR | Month {X} | ⬜ |
-| 100 active users | Month {X} | ⬜ |
-| Product-market fit signal | Month {X} | ⬜ |
-| $10K MRR | Month {X} | ⬜ |
+These features sound important but are not needed for v1. Add them only after users ask:
+
+| Cut | Why | When to add |
+|-----|-----|-------------|
+| {Feature} | {reason — "nobody needs this before they've used the core feature"} | After {signal} |
+| {Feature} | {reason} | After {signal} |
+| {Feature} | {reason} | After {signal} |
 
 ---
 
-## Resource Requirements
+## AI Tools to Use
 
-### Team
-| Role | Months 1–3 | Months 4–6 | Months 7–12 |
-|------|-----------|-----------|-------------|
-| Founder/CEO | Full-time | Full-time | Full-time |
-| Developer | {X hrs/week} | Full-time | Full-time |
-| Designer | {X hrs/week contract} | Part-time | Part-time |
-| Marketing | — | Part-time | Full-time |
+Match tasks to the right AI tool to move faster:
 
-### Budget Estimate
-| Category | Months 1–3 | Months 4–6 | Months 7–12 |
-|----------|-----------|-----------|-------------|
-| Infrastructure | ${X}/mo | ${X}/mo | ${X}/mo |
-| AI/API costs | ${X}/mo | ${X}/mo | ${X}/mo |
-| Tools & SaaS | ${X}/mo | ${X}/mo | ${X}/mo |
-| Marketing | ${X}/mo | ${X}/mo | ${X}/mo |
-| **Total** | **~${X}K** | **~${X}K** | **~${X}K** |
-
-**Total 12-month burn (pre-revenue):** ~${X}K
+| Task | Use |
+|------|-----|
+| Scaffold entire project | Claude Code: `build me a {stack} app with {feature}` |
+| CRUD boilerplate | Claude Code or Cursor tab completion |
+| UI components | v0.dev or shadcn/ui |
+| Landing page copy | Claude: `write landing page copy for {product} targeting {user}` |
+| SQL schema | Claude: `design SQLite schema for {description}` |
+| Debugging | Claude Code with full file context |
+| Writing tests | Claude Code: `write pytest tests for this module` |
 
 ---
 
-## Decision Points
+## Cost to Run (Monthly)
 
-These are the key go/no-go decisions in the roadmap:
+| Service | Plan | Cost |
+|---------|------|------|
+| {Hosting} | {tier} | ${X}/mo |
+| {Database} | {tier} | ${X}/mo |
+| {Auth} | {tier} | ${X}/mo |
+| {AI API} | pay-as-you-go | ~${X}/mo |
+| **Total** | | **~${X}/mo** |
 
-1. **Month 3 Decision:** After launch, is there organic user interest (>50 signups in 2 weeks without paid ads)? If not → pivot or kill.
-
-2. **Month 6 Decision:** Is Day-30 retention above {X}%? If not → fix retention before spending on growth.
-
-3. **Month 9 Decision:** Is the best acquisition channel profitable (LTV > 3× CAC)? If yes → scale that channel aggressively.
-
----
-
-## Risks to Roadmap
-
-| Risk | Trigger | Response |
-|------|---------|----------|
-| {Risk 1} | {what signals it's happening} | {how to respond} |
-| {Risk 2} | {signal} | {response} |
-| {Risk 3} | {signal} | {response} |
+Break-even: {X} paying customers at ${price}/month.
 
 ---
 
@@ -342,6 +227,6 @@ These are the key go/no-go decisions in the roadmap:
 
 ## Post-Generation Actions
 
-1. Save to `VAULT_PATH_PLACEHOLDER\Ideas\Roadmaps\{YYYY-MM-DD}-roadmap-{slug}.md`
+1. Save to `E:\Journal\Ideas\Roadmaps\{YYYY-MM-DD}-roadmap-{slug}.md`
 2. Tell the user the file path
-3. Suggest `/generate-prd` if not already done
+3. Suggest starting to build — not more planning
