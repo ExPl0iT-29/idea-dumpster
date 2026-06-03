@@ -14,10 +14,16 @@
 ```
 
 
-Claude Code slash commands that turn rough startup and product ideas into structured research reports, saved directly to your Obsidian vault.
+Slash commands for **Claude Code** and shell functions for **OpenAI Codex** that turn rough startup and product ideas into structured research reports, saved directly to your Obsidian vault.
 
+**Claude Code:**
 ```
-/analyze-idea "A Idea Dumpster where i can put ideas and get proper researched"
+/analyze-idea "A tool where I can dump ideas and get proper research"
+```
+
+**Codex (after install):**
+```
+analyze-idea "A tool where I can dump ideas and get proper research"
 ```
 
 Produces a 25-section report — market research, competitors, tech stack, cost estimates, viability score — and writes it to `{vault}/Ideas/Research/`. No browser tabs, no copy-pasting, no switching apps.
@@ -26,15 +32,15 @@ Produces a 25-section report — market research, competitors, tech stack, cost 
 
 ## Commands
 
-| Command | What you get |
-|---------|-------------|
-| `/analyze-idea` | Full research report with weighted viability score (0–100) |
-| `/compare-ideas` | Side-by-side matrix of 2–4 ideas |
-| `/generate-prd` | Product requirements document |
-| `/generate-roadmap` | 12-month roadmap with milestones |
-| `/estimate-cost` | Infrastructure cost breakdown (MVP → scale) |
-| `/find-datasets` | Relevant public datasets and APIs |
-| `/suggest-tech-stack` | Stack recommendation with tradeoffs |
+| Command | Claude Code | Codex | What you get |
+|---------|-------------|-------|-------------|
+| `analyze-idea` | `/analyze-idea` | `analyze-idea` | Full research report with weighted viability score (0–100) |
+| `compare-ideas` | `/compare-ideas` | `compare-ideas` | Side-by-side matrix of 2–4 ideas |
+| `generate-prd` | `/generate-prd` | `generate-prd` | Product requirements document |
+| `generate-roadmap` | `/generate-roadmap` | `generate-roadmap` | Sprint-level roadmap with milestones |
+| `estimate-cost` | `/estimate-cost` | `estimate-cost` | Infrastructure cost breakdown (MVP → scale) |
+| `find-datasets` | `/find-datasets` | `find-datasets` | Relevant public datasets and APIs |
+| `suggest-tech-stack` | `/suggest-tech-stack` | `suggest-tech-stack` | Stack recommendation with tradeoffs |
 
 ---
 
@@ -57,15 +63,20 @@ cd idea-dumpster
 .\install.ps1
 ```
 
-The script asks for your Obsidian vault path, copies the commands to `~/.claude/commands/`, and creates the `Ideas/` folder structure in your vault.
+The installer:
+- Asks for your Obsidian vault path
+- Auto-detects which AI tools you have installed (Claude Code, Codex, or both)
+- Copies commands to the right locations for each tool
+- For Codex: injects shell functions into your `~/.bashrc` / `~/.zshrc` (Unix) or PowerShell `$PROFILE` (Windows)
+- Creates the `Ideas/` folder structure in your vault
 
-Restart Claude Code after installing.
+Restart Claude Code and/or reload your shell after installing.
 
 ---
 
 ## Usage
 
-### Analyze an idea
+### Claude Code
 
 ```
 /analyze-idea "Subscription box for indie game soundtracks"
@@ -78,33 +89,62 @@ With extra context:
 Notes: targeting US market, I have music licensing connections, budget ~$10K to start
 ```
 
+### Codex
+
+```bash
+analyze-idea "Subscription box for indie game soundtracks"
+```
+
+With extra context:
+
+```bash
+analyze-idea "Subscription box for indie game soundtracks — targeting US market, music licensing connections, budget ~$10K"
+```
+
+> Codex commands run with `--approval-mode full-auto` so the agent generates and saves the report without prompting for each step. You can review the file in your vault when it finishes.
+
 ### Compare ideas
 
+**Claude Code:**
 ```
 /compare-ideas "indie game soundtrack box" vs "video game lore podcast network"
+```
+
+**Codex:**
+```bash
+compare-ideas "indie game soundtrack box" vs "video game lore podcast network"
 ```
 
 Or reference reports you've already generated:
 
 ```
 /compare-ideas "farmwise-crop-price-ai-platform" vs "termread-cli-book-reader"
+compare-ideas "farmwise-crop-price-ai-platform" vs "termread-cli-book-reader"
 ```
 
 ### Follow-up commands
 
 Once you have an analysis you like, chain the other commands:
 
+**Claude Code:**
 ```
 /generate-prd "Indie Game Soundtrack Box"
 /generate-roadmap "Indie Game Soundtrack Box"
 /estimate-cost "Indie Game Soundtrack Box" --scale 5000 users
 ```
 
+**Codex:**
+```bash
+generate-prd "Indie Game Soundtrack Box"
+generate-roadmap "Indie Game Soundtrack Box"
+estimate-cost "Indie Game Soundtrack Box" --scale 5000 users
+```
+
 ---
 
 ## Report structure
 
-Every `/analyze-idea` report includes:
+Every `analyze-idea` report includes:
 
 1. Executive Summary
 2. Problem Statement
@@ -181,36 +221,46 @@ See [`examples/`](examples/) for a complete sample report.
 
 ## Requirements
 
-- [Claude Code](https://claude.ai/code) — the commands run as Claude Code slash commands
+- [Claude Code](https://claude.ai/code) and/or [OpenAI Codex CLI](https://github.com/openai/codex) — at least one must be installed
 - [Obsidian](https://obsidian.md) — reports are saved as Markdown to your vault
-- No API keys, no accounts, no servers
+- No API keys beyond what your chosen AI tool requires
+
+---
+
+## How it works
+
+### Claude Code
+
+Commands are [Claude Code custom slash commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — Markdown files in `~/.claude/commands/` that Claude follows when you type `/analyze-idea`. Claude generates the report and uses its `Write` tool to save it directly to your vault.
+
+### Codex
+
+Commands are Markdown prompt files installed to `~/.codex/commands/` (Unix) or `%USERPROFILE%\.codex\commands\` (Windows). The installer adds shell functions (`analyze-idea`, `generate-prd`, etc.) to your shell profile. Each function reads the corresponding prompt file and passes it to `codex --approval-mode full-auto`, which generates and writes the report autonomously.
+
+Both tools read the same underlying prompt logic — the only differences are file format (YAML frontmatter for Claude Code, plain Markdown for Codex) and how files are saved (Claude's `Write` tool vs. Codex's shell file writes).
 
 ---
 
 ## Customization
 
 **Change vault path after install:**
-Open `~/.claude/commands/analyze-idea.md` (and the other command files) and find the `Vault path:` line near the top. Update it to your vault path.
+
+- Claude Code: edit the `Vault path:` line in `~/.claude/commands/analyze-idea.md` (and other command files)
+- Codex: edit the same line in `~/.codex/commands/analyze-idea.md`
 
 **Add your own sections:**
-Edit any command file in `~/.claude/commands/`. They're just Markdown files with instructions Claude follows.
+Edit any command file in `~/.claude/commands/` or `~/.codex/commands/`. They're plain Markdown files.
 
 **Adjust scoring weights:**
-Find the scoring table in `~/.claude/commands/analyze-idea.md` and change the `Weight` column values. Higher weight = more influence on the final score.
-
----
-
-## How it works
-
-These are [Claude Code custom commands](https://docs.anthropic.com/en/docs/claude-code/slash-commands) — Markdown files that live in `~/.claude/commands/` and define instructions Claude follows when you invoke them. When you run `/analyze-idea`, Claude reads `analyze-idea.md`, follows the instructions, generates the report, and uses the `Write` tool to save it to your vault.
-
-No external process, no background service. It's Claude generating structured output based on a detailed prompt template.
+Find the scoring table in `analyze-idea.md` and change the `Weight` column values. Higher weight = more influence on the final score.
 
 ---
 
 ## Contributing
 
-Issues and PRs welcome. If you add a new command (e.g., `/generate-pitch`, `/find-competitors`, `/estimate-revenue`) and it's useful, open a PR and I'll merge it.
+Issues and PRs welcome. If you add a new command (e.g., `generate-pitch`, `find-competitors`, `estimate-revenue`) and it's useful, open a PR and I'll merge it.
+
+When adding a new command, add it to both `commands/` (Claude Code, with YAML frontmatter) and `codex/` (Codex, without frontmatter), and update the shell function lists in both install scripts.
 
 ---
 
